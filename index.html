@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Інтерактивна художня галерея у стилі Вінсента ван Гога. Досліджуйте полотно та відкривайте нові розділи.">
+    <title>Ван Гог - Інтерактивне полотно</title>
+    <!-- Попереднє завантаження зображення фонлу для покращення LCP -->
+    <link rel="preload" as="image" href="https://i.postimg.cc/zXbGNbXC/Gemini-Generated-Image-rrzta1rrzta1rrzt.jpg">
+    <style>
+        :root {
+            --bg-color: #0a192f;
+            --accent-color: #ffd700;
+            --text-color: #e0e0e0;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Контейнер для картини */
+        .canvas-container {
+            width: 100vw;
+            height: 100vh;
+            background-image: url('https://i.postimg.cc/zXbGNbXC/Gemini-Generated-Image-rrzta1rrzta1rrzt.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* Інтерактивні зони */
+        .interactive-zone {
+            position: absolute;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 0 rgba(255, 215, 0, 0);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Світіння при наведенні або фокусі (доступність) */
+        .interactive-zone:hover,
+        .interactive-zone:focus-visible {
+            background-color: rgba(255, 215, 0, 0.25);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+            transform: scale(1.05);
+            outline: 2px solid var(--accent-color);
+        }
+
+        /* Підказки (Tooltip) */
+        .interactive-zone::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 115%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-color);
+            color: var(--accent-color);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .interactive-zone:hover::after,
+        .interactive-zone:focus-visible::after {
+            opacity: 1;
+        }
+
+        /* Точні координати інтерактивних зон */
+        .zone-sky { top: 10%; left: 25%; width: 35%; height: 25%; }
+        .zone-tavern { top: 45%; left: 70%; width: 25%; height: 40%; }
+        .zone-bridge { top: 40%; left: 25%; width: 30%; height: 18%; }
+        .zone-boats { top: 65%; left: 10%; width: 22%; height: 25%; }
+        .zone-people { top: 70%; left: 50%; width: 18%; height: 22%; }
+
+        /* Модальні вікна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 35px 30px;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            z-index: 1000;
+            width: 85%;
+            max-width: 550px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: var(--accent-color);
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        .modal p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Кнопка закриття */
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            color: var(--accent-color);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s;
+            padding: 5px;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus-visible {
+            color: #ffffff;
+            outline: none;
+        }
+
+        /* Затемнення фону */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
+        /* Активація модальних вікон через URL hash */
+        .modal:target, 
+        .modal:target ~ .overlay {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="canvas-container" role="region" aria-label="Інтерактивна картина у стилі Ван Гога">
+        <!-- Клікабельні зони з мітками доступності -->
+        <a href="#modal-sky" class="interactive-zone zone-sky" data-tooltip="Філософія та Ідея" aria-label="Відкрити розділ: Зоряне Небо"></a>
+        <a href="#modal-tavern" class="interactive-zone zone-tavern" data-tooltip="Наші Послуги" aria-label="Відкрити розділ: Затишна Таверна"></a>
+        <a href="#modal-bridge" class="interactive-zone zone-bridge" data-tooltip="Галерея Робіт" aria-label="Відкрити розділ: Міст у Майбутнє"></a>
+        <a href="#modal-boats" class="interactive-zone zone-boats" data-tooltip="Шлях та Доставка" aria-label="Відкрити розділ: Річкові Човни"></a>
+        <a href="#modal-people" class="interactive-zone zone-people" data-tooltip="Відгуки та Контакти" aria-label="Відкрити розділ: Нічні Перехожі"></a>
+    </main>
+
+    <!-- Модальні вікна -->
+    <div id="modal-sky" class="modal" role="dialog" aria-modal="true" aria-labelledby="sky-title">
+        <a href="#" class="close-btn" aria-label="Закрити вікно">&times;</a>
+        <h2 id="sky-title">Зоряне Небо</h2>
+        <p>Під цими закрученими зорями ховається наша філософія: безмежний креатив та глибоке бачення кожного проєкту.</p>
+    </div>
+
+    <div id="modal-tavern" class="modal" role="dialog" aria-modal="true" aria-labelledby="tavern-title">
+        <a href="#" class="close-btn" aria-label="Закрити вікно">&times;</a>
+        <h2 id="tavern-title">Затишна Таверна</h2>
+        <p>Місце, де народжуються ідеї. Ознайомтесь із нашими послугами та «меню» можливостей.</p>
+    </div>
+
+    <div id="modal-bridge" class="modal" role="dialog" aria-modal="true" aria-labelledby="bridge-title">
+        <a href="#" class="close-btn" aria-label="Закрити вікно">&times;</a>
+        <h2 id="bridge-title">Міст у Майбутнє</h2>
+        <p>Перегляньте нашу галерею реалізованих проєктів, які з'єднують мрії з реальністю.</p>
+    </div>
+
+    <div id="modal-boats" class="modal" role="dialog" aria-modal="true" aria-labelledby="boats-title">
+        <a href="#" class="close-btn" aria-label="Закрити вікно">&times;</a>
+        <h2 id="boats-title">Річкові Човни</h2>
+        <p>Ми забезпечуємо плавний процес розробки та надійну доставку результатів точно в строк.</p>
+    </div>
+
+    <div id="modal-people" class="modal" role="dialog" aria-modal="true" aria-labelledby="people-title">
+        <a href="#" class="close-btn" aria-label="Закрити вікно">&times;</a>
+        <h2 id="people-title">Нічні Перехожі</h2>
+        <p>Приєднуйтесь до нашої спільноти. Зв'яжіться з нами або прочитайте відгуки тих, хто вже пройшов цей шлях.</p>
+    </div>
+
+    <!-- Кнопка скидання стану при кліку поза вікном -->
+    <a href="#" class="overlay" aria-label="Закрити вікно"></a>
+
+</body>
+</html>
