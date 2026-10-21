@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Інтерактивна художня галерея у стилі Вінсента ван Гога. Досліджуйте полотно та відкривайте нові розділи.">
     <title>Ван Гог - Інтерактивне полотно</title>
-    <!-- Попереднє завантаження зображення фонлу для покращення LCP -->
+    <!-- Попереднє завантаження зображення фону для покращення LCP -->
     <link rel="preload" as="image" href="https://i.postimg.cc/zXbGNbXC/Gemini-Generated-Image-rrzta1rrzta1rrzt.jpg">
     <style>
         :root {
@@ -44,18 +44,17 @@
             position: absolute;
             cursor: pointer;
             border-radius: 50%;
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
             box-shadow: 0 0 0 rgba(255, 215, 0, 0);
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Світіння при наведенні або фокусі (доступність) */
+        /* Збільшення на 6% та підсвітка по контуру при наведенні */
         .interactive-zone:hover,
         .interactive-zone:focus-visible {
-            background-color: rgba(255, 215, 0, 0.25);
+            transform: scale(1.06);
             box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
-            transform: scale(1.05);
-            outline: 2px solid var(--accent-color);
+            outline: none;
         }
 
         /* Підказки (Tooltip) */
@@ -163,17 +162,17 @@
 </head>
 <body>
 
-<main class="canvas-container" role="region" aria-label="Інтерактивна картина у стилі Ван Гога">
-    <!-- Додаємо це зображення для правильного визначення LCP пошуковим роботом -->
-    <img src="https://i.postimg.cc/zXbGNbXC/Gemini-Generated-Image-rrzta1rrzta1rrzt.jpg" alt="Ван Гог Інтерактивне полотно" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />
+    <main class="canvas-container" role="region" aria-label="Інтерактивна картина у стилі Ван Гога">
+        <!-- Додаємо це зображення для правильного визначення LCP пошуковим роботом -->
+        <img src="https://i.postimg.cc/zXbGNbXC/Gemini-Generated-Image-rrzta1rrzta1rrzt.jpg" alt="Ван Гог Інтерактивне полотно" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />
 
-    <!-- Клікабельні зони з мітками доступності -->
-    <a href="#modal-sky" class="interactive-zone zone-sky" data-tooltip="Філософія та Ідея" aria-label="Відкрити розділ: Зоряне Небо"></a>
-    <a href="#modal-tavern" class="interactive-zone zone-tavern" data-tooltip="Наші Послуги" aria-label="Відкрити розділ: Затишна Таверна"></a>
-    <a href="#modal-bridge" class="interactive-zone zone-bridge" data-tooltip="Галерея Робіт" aria-label="Відкрити розділ: Міст у Майбутнє"></a>
-    <a href="#modal-boats" class="interactive-zone zone-boats" data-tooltip="Шлях та Доставка" aria-label="Відкрити розділ: Річкові Човни"></a>
-    <a href="#modal-people" class="interactive-zone zone-people" data-tooltip="Відгуки та Контакти" aria-label="Відкрити розділ: Нічні Перехожі"></a>
-</main>
+        <!-- Клікабельні зони з мітками доступності -->
+        <a href="#modal-sky" class="interactive-zone zone-sky" data-tooltip="Філософія та Ідея" aria-label="Відкрити розділ: Зоряне Небо"></a>
+        <a href="#modal-tavern" class="interactive-zone zone-tavern" data-tooltip="Наші Послуги" aria-label="Відкрити розділ: Затишна Таверна"></a>
+        <a href="#modal-bridge" class="interactive-zone zone-bridge" data-tooltip="Галерея Робіт" aria-label="Відкрити розділ: Міст у Майбутнє"></a>
+        <a href="#modal-boats" class="interactive-zone zone-boats" data-tooltip="Шлях та Доставка" aria-label="Відкрити розділ: Річкові Човни"></a>
+        <a href="#modal-people" class="interactive-zone zone-people" data-tooltip="Відгуки та Контакти" aria-label="Відкрити розділ: Нічні Перехожі"></a>
+    </main>
 
     <!-- Модальні вікна -->
     <div id="modal-sky" class="modal" role="dialog" aria-modal="true" aria-labelledby="sky-title">
